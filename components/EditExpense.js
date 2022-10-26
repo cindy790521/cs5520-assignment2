@@ -1,22 +1,50 @@
 import { StyleSheet,View, Text,Button,Pressable, Alert } from 'react-native'
 import React,{ useState ,useEffect} from 'react'
+import {writeToExpenses,writeToImportantExpenses,deleteFromExpenses,deleteFromImportantExpenses} from '../firebase/firestore';
+import { Colors } from '../helpers/Colors';
+
 
 export default function EditExpense({ navigation,route,expenses, setExpenses,importantExpenses,setImportantExpenses}) {
     
     
     const [isImportant,setIsImportant]=useState(false);
-    function onDelete(deletedKey){
+    async function onDelete(){
         console.log('delete')
-        setExpenses(expenses.filter(expense=>{return expense.key!=deletedKey}));
-        setImportantExpenses(importantExpenses.filter(importantExpense=>{return importantExpense.key!=deletedKey}));
-         navigation.goBack();
+        let deletedKey;
+        for(let i =0;i<expenses.length;i++){
+            
+            if(expenses[i].expid == route.params.expense.expid){
+                deletedKey=expenses[i].key;
+            }}
+        await deleteFromExpenses(deletedKey);
+        
+        // setExpenses(expenses.filter(expense=>{return expense.key!=deletedKey}));
+        // setImportantExpenses(importantExpenses.filter(importantExpense=>{return importantExpense.key!=deletedKey}));
+         
     }
-    function addToImportant(){
+    async function onDeleteImportant(){
+        console.log('deleteimportant')
+        let deletedKey;
+        for(let i =0;i<importantExpenses.length;i++){
+            
+            if(importantExpenses[i].expid == route.params.expense.expid){
+                deletedKey=importantExpenses[i].key;
+            }}
+        await deleteFromImportantExpenses(deletedKey);
+        // setExpenses(expenses.filter(expense=>{return expense.key!=deletedKey}));
+        // setImportantExpenses(importantExpenses.filter(importantExpense=>{return importantExpense.key!=deletedKey}));
+         
+    }
+    async function addToImportant(){
         console.log('addToImportant');
-        setImportantExpenses((prevexpenses)=>{
-            const newExpense=route.params.expense;
-            return [...prevexpenses,newExpense];
-          });
+        
+        console.log('curexp',route.params.expense)
+        
+        await writeToImportantExpenses(route.params.expense);
+        // setImportantExpenses((prevexpenses)=>{
+        //     const newExpense=route.params.expense;
+        //     return [...prevexpenses,newExpense];
+        //   });
           navigation.goBack();
     }
 
@@ -56,15 +84,22 @@ export default function EditExpense({ navigation,route,expenses, setExpenses,imp
         //   onPress: () => navigation.goBack(),
           style: "cancel"
         },
-        { text: "Yes", onPress: ()=>onDelete(route.params.expense.key) }
+        { text: "Yes", onPress: ()=>{
+            onDelete();
+            if(isImportant){
+                
+                onDeleteImportant();}
+            
+            navigation.goBack();
+        } }
       ]
     );
     useEffect(()=>{
-        console.log('effect',route.params.expense.key);
+        console.log('effect',route.params.expense);
 
         for(let i =0;i<importantExpenses.length;i++){
-            console.log(importantExpenses[i].key)
-            if(importantExpenses[i].key == route.params.expense.key){
+            console.log(importantExpenses[i].expid)
+            if(importantExpenses[i].expid == route.params.expense.expid){
              setIsImportant(true);
         };
     }},[]);
@@ -77,38 +112,36 @@ export default function EditExpense({ navigation,route,expenses, setExpenses,imp
     
     <View style={styles.container}>
       
-<View style={styles.goalTextContainer}>
-      {isImportant==false &&<Pressable 
+      {isImportant==false &&
+      <Pressable 
         onPress={createMarkAlert}
         style={({pressed})=>{
-          return pressed&&styles.pressedItem;
-        }}
-        android_ripple={{color:"#223355", foreground: true}}
+            if(pressed){return [styles.goalTextContainer,styles.pressedItem];}
+            else{return styles.goalTextContainer;}
+            }
+        }
+        android_ripple={{color:Colors.yellow, foreground: true}}
         >
           
-          <View >
+          
             <Text style={styles.button}>Mark as Important</Text>
-            </View>
-        </Pressable>}
-        </View>
-        <View >
+            
+        </Pressable>
+        }
+        
       <Pressable 
         onPress={createDeleteAlert}
         style={({pressed})=>{
-          return pressed&&styles.pressedItem;
+            if(pressed){return [styles.goalTextContainer,styles.pressedItem];}
+            else{return styles.goalTextContainer;}
+        //   return pressed&&styles.pressedItem;
         }}
-        android_ripple={{color:"#223355", foreground: true}}
+        android_ripple={{color:Colors.yellow, foreground: true}}
         >
-          
-          <View style={styles.goalTextContainer}>
-
             <Text style={styles.button}>Delete</Text>
-            </View>
-
         </Pressable>
         </View>
         
-    </View>
   )
 }
 
@@ -124,19 +157,19 @@ const styles = StyleSheet.create({
        margin:10,
        borderRadius: 5,
        padding:5,
-       backgroundColor: "#aaa",
+       backgroundColor: Colors.pink,
        justifyContent:'center',
         alignItems:'center'
        
      },
     button:{
-        color:'red',
+        color:Colors.red,
         fontSize:18,
         // flex:1,
         // justifyContent:'center'
     },
     pressedItem:{
       opacity:0.5,
-      backgroundColor:"#222"
+      backgroundColor:Colors.yellow
     }
 })

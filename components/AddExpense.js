@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, TextInput, Button, SafeAreaView,ScrollView, FlatList,Alert } from 'react-native';
 import React,{useState} from 'react'
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
-
+import {writeToExpenses} from '../firebase/firestore';
+import { Colors } from '../helpers/Colors';
 export default function AddExpense({navigation,setExpenses, expenses}) {
     const [expenseAmount, setExpenseAmount] = useState("");
     const [expenseDescription, setExpenseDescription] = useState("");
@@ -9,11 +10,15 @@ export default function AddExpense({navigation,setExpenses, expenses}) {
         
         navigation.goBack();
     }
-    function addCurExpense(){
-        const newExpense={amount:parseInt(expenseAmount),description:expenseDescription,key:Math.random()}
-        setExpenses((prevexpenses)=>{
-      return [...prevexpenses,newExpense]
-    });
+    async function addCurExpense(){
+        const newExpense={amount:parseInt(expenseAmount),description:expenseDescription,expid:Math.random()}
+
+        // const newExpense={amount:parseInt(expenseAmount),description:expenseDescription}
+        await writeToExpenses(newExpense);
+        
+    //     setExpenses((prevexpenses)=>{
+    //   return [...prevexpenses,newExpense]
+    // });
         navigation.goBack();
     }
 
@@ -62,31 +67,43 @@ export default function AddExpense({navigation,setExpenses, expenses}) {
         />
         
         <View style={styles.buttonContainer}>
-            <View style={styles.button}>
+            <View >
             <Pressable 
             onPress={cancel} 
     android_ripple={{color:'#555',  foreground:true}}
     // style={({pressed})=>{
     //   return pressed && styles.pressedItem;
     // }}
-    style={(obj)=>{
-      return obj.pressed && styles.pressedItem;
-    }}
+    style={({pressed})=>{
+        if(pressed){return [styles.button,styles.pressedItem];}
+        else{return styles.button;}
+        }
+    }
+
+    // style={(obj)=>{
+    //   return obj.pressed && styles.pressedItem;
+    // }}
             >
                 <Text>cancel</Text>
                 </Pressable>
                 </View>
-                <View style={styles.button}>
+                <View >
             <Pressable
             
             onPress={()=>check(expenseAmount,expenseDescription,addCurExpense)} 
-            android_ripple={{color:'#555',  foreground:true}}
+            android_ripple={{color:Colors.yellow,  foreground:true}}
             // style={({pressed})=>{
             //   return pressed && styles.pressedItem;
             // }}
-            style={(obj)=>{
-              return obj.pressed && styles.pressedItem;
-            }}
+
+            style={({pressed})=>{
+                if(pressed){return [styles.button,styles.pressedItem];}
+                else{return styles.button;}
+                }
+            }
+            // style={(obj)=>{
+            //   return obj.pressed && styles.pressedItem;
+            // }}
             >
                 <Text>submit</Text>
                 </Pressable>
@@ -102,8 +119,8 @@ const styles = StyleSheet.create({
         width:'70%'
     },
     buttonContainer:{
-        // backgroundColor:'green',
-        height:'5%',
+        //  backgroundColor:'green',
+        height:'40%',
         width:'70%',
         flexDirection:'row',
         justifyContent:'space-evenly',
@@ -125,23 +142,23 @@ title:{
     },
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: Colors.white,
       alignItems: 'center',
       justifyContent: 'center',
     },
     inputAmount:{
-        color:'red',
-        backgroundColor:'#fff0f5',
+        color:Colors.red,
+        backgroundColor:Colors.lightPink,
         // borderBottomWidth:2,
         // borderBottomColor:'purple',
         margin:5,
         width:'70%',
-        height:'5%',
+        height:'10%',
         borderRadius:5
       },
     inputDescription:{
-      color:'red',
-      backgroundColor:'#fff0f5',
+      color:Colors.red,
+      backgroundColor:Colors.lightPink,
     //   borderBottomWidth:2,
     //   borderBottomColor:'purple',
       margin:5,
@@ -150,26 +167,26 @@ title:{
       borderRadius:5
     },
     description:{
-        backgroundColor:'white',
+        backgroundColor:Colors.white,
         fontSize: 50,
     },
     pressedItem:{
-      backgroundColor:"blue"
+      backgroundColor:Colors.blue
     },
     button:{
-      backgroundColor:"pink",
+      backgroundColor:Colors.pink,
       alignItems: 'center',
       justifyContent: 'center',
       padding:5,
-      width:'40%',
-      borderRadius:5
+      width:100,
+      borderRadius:5,
     },
       
       goalTextContainer: {
         margin:8,
         borderRadius: 5,
         padding:5,
-        backgroundColor: "#aaa",
+        backgroundColor: Colors.pink,
         flexDirection:'row',
         justifyContent:'space-between',
         alignItems:'space-evenly'
@@ -177,12 +194,12 @@ title:{
       },
       goaltext:{
         fontSize: 20,
-      color: "#929",
+      color: Colors.black,
       // backgroundColor:'#aaa',
       padding: 8,
       },
       pressedItem:{
-        backgroundColor: "#222",
+        backgroundColor:Colors.yellow,
       opacity: 0.5,
       }
 })

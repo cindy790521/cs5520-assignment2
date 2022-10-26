@@ -1,6 +1,7 @@
 import { StyleSheet,View, Text,Button,Pressable } from 'react-native'
 import React from 'react'
 import EditExpense from './EditExpense.js';
+import { Colors } from '../helpers/Colors.js';
 
 
 export default function ExpenseList({expense,navigation}) {
@@ -15,23 +16,26 @@ export default function ExpenseList({expense,navigation}) {
       
       <Pressable 
     onPress={goToEditExpense} 
-    android_ripple={{color:'#555',  foreground:true}}
+    android_ripple={{color:Colors.yellow,  foreground:true}}
     // style={({pressed})=>{
     //   return pressed && styles.pressedItem;
     // }}
-    style={(obj)=>{
-      return obj.pressed && styles.pressedItem;
-    }}
+    style={({pressed})=>{
+        if(pressed){return [styles.goalTextContainer,styles.pressedItem];}
+        else{return styles.goalTextContainer;}
+        }
+    }
+    
+    // style={(obj)=>{
+    //   return obj.pressed && styles.pressedItem;
+    // }}
     >
-             <View  style={styles.goalTextContainer}>
+             <View  style={styles.goalTextContainerTrue}>
              <View  styles={styles.description}>
-             <Text >{expense.description}</Text>
+             <Text  styles={{color:'white'}}>{expense.description}</Text>
              </View>
-             <View styles={styles.amount}>
-             <Text >{expense.amount}</Text>
-             </View>
-             <View >
-             <Text >test</Text>
+             <View>
+             <Text  styles={styles.amount}>{expense.amount}</Text>
              </View>
              </View>
              </Pressable>
@@ -42,17 +46,22 @@ export default function ExpenseList({expense,navigation}) {
 
 const styles = StyleSheet.create({
     list:{
-        backgroundColor:'blue',
-        flex:0.1,
+        // backgroundColor:'blue',
+        // height:100
+        // flex:0.1,
         // justifyContent:'center',
     },
-    description:{backgroundColor:'green', flex:0.1,},
+    description:{
+        backgroundColor:'green !important'
+        , flex:0.1,
+    },
     amount:{
         backgroundColor:'red',
+        fontSize:100,
         // width:100,
         // height:30,
         // margin:50,
-        flex:0.5,
+        //  flex:0.5,
     },
     pressedItem:{
       backgroundColor:"blue"
@@ -60,16 +69,29 @@ const styles = StyleSheet.create({
     button:{
       // backgroundColor:"black"
     },
-      
-      goalTextContainer: {
+    goalTextContainerTrue: {
         flex:1,
+        // marginTop:10,
+         width:'100%',
+        //  height:40,
+        // margin:8,
+        // borderRadius: 5,
+        // // padding:5,
+        // backgroundColor: Colors.blue,
+        flexDirection:'row',
+        justifyContent:'space-between',
+        //  alignItems:'center'
+        
+      },
+      goalTextContainer: {
+        // flex:1,
         marginTop:10,
          width:250,
          height:40,
         margin:8,
         borderRadius: 5,
         padding:5,
-        backgroundColor: "pink",
+        backgroundColor: Colors.pink,
         flexDirection:'row',
         justifyContent:'space-between',
          alignItems:'center'
@@ -77,12 +99,12 @@ const styles = StyleSheet.create({
       },
       goaltext:{
         fontSize: 30,
-      color: "#929",
+      color: Colors.black,
       // backgroundColor:'#aaa',
       padding: 8,
       },
       pressedItem:{
-        backgroundColor: "#222",
+        backgroundColor: Colors.yellow,
       opacity: 0.5,
       }
     });

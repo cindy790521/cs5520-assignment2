@@ -1,17 +1,17 @@
-import { View, Text,Button, FlatList, StyleSheet } from 'react-native'
+import { View,SafeAreaView, Text,Button, FlatList, StyleSheet } from 'react-native'
 import React from 'react'
 import ExpenseList from './ExpenseList';
-
+import { Colors } from '../helpers/Colors.js';
 
 
 function rightButtonPressed(){console.log("rightButtonPressed");}
 
-export default function AllExpenses({route, navigation,expenses,setExpenses}) {
+export default function AllExpenses({route, navigation,expenses,setExpenses,setImportantExpenses}) {
     
   
     return (
         
-    <View style={styles.allExpensesContainer}>
+    <SafeAreaView style={styles.allExpensesContainer}>
       
       {console.log('p',route.params)}
       {/* <ExpenseList curExpense='666' curDescription="word" navigation={navigation}/> */}
@@ -26,7 +26,7 @@ contentContainerStyle={styles.scrollviewItems}>
           
               </FlatList>
       
-    </View>
+    </SafeAreaView>
     
     
   )
@@ -41,25 +41,16 @@ const styles = StyleSheet.create({
     container: {
   
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: Colors.white,
       // alignItems: 'center',
       justifyContent: 'center',
       // flexDirection:'row'
     },
-    topContainer: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    bottomContainer: {
-      flex: 4,
-      backgroundColor: 'pink',
-      // alignItems: 'center',
-    },
+    
     textContainer: {
-      backgroundColor: "#aaa",
+      backgroundColor: Colors.gray,
       borderRadius: 5,
-      color: 'blue',
+      color: Colors.blue,
       padding:15,
       margin:20
     },
