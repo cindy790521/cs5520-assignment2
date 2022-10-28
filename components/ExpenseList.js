@@ -1,110 +1,65 @@
-import { StyleSheet,View, Text,Button,Pressable } from 'react-native'
-import React from 'react'
-import EditExpense from './EditExpense.js';
+import { StyleSheet, View, Text, Pressable } from 'react-native';
+import React from 'react';
 import { Colors } from '../helpers/Colors.js';
 
 
-export default function ExpenseList({expense,navigation}) {
-    function goToEditExpense(){
-        console.log('goToEditExpense')
-        navigation.navigate("EditExpense",{navigation:{navigation},expense:expense})}
-        
-  
-        return (
-    <View style={styles.list}>
-      
-      
-      <Pressable 
-    onPress={goToEditExpense} 
-    android_ripple={{color:Colors.yellow,  foreground:true}}
-    // style={({pressed})=>{
-    //   return pressed && styles.pressedItem;
-    // }}
-    style={({pressed})=>{
-        if(pressed){return [styles.goalTextContainer,styles.pressedItem];}
-        else{return styles.goalTextContainer;}
-        }
+export default function ExpenseList({ expense, navigation }) {
+    function goToEditExpense() {
+        navigation.navigate(
+            "EditExpense",
+            { navigation: { navigation }, expense: expense })
     }
-    
-    // style={(obj)=>{
-    //   return obj.pressed && styles.pressedItem;
-    // }}
-    >
-             <View  style={styles.goalTextContainerTrue}>
-             <View  styles={styles.description}>
-             <Text  styles={{color:'white'}}>{expense.description}</Text>
-             </View>
-             <View>
-             <Text  styles={styles.amount}>{expense.amount}</Text>
-             </View>
-             </View>
-             </Pressable>
-            
-    </View>
-  )
+
+    return (
+        <View>
+            <Pressable
+                onPress={goToEditExpense}
+                android_ripple={{ color: Colors.yellow, foreground: true }}
+                style={({ pressed }) => {
+                    if (pressed) { return [styles.listContainer, styles.pressedItem]; }
+                    else { return styles.listContainer; }
+                }
+                }>
+                <View style={styles.listContainerFlex}>
+                    <Text >{expense.description}</Text>
+                    <View style={styles.amount}>
+                        <Text  >{expense.amount}</Text>
+                    </View>
+                </View>
+            </Pressable>
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
-    list:{
-        // backgroundColor:'blue',
-        // height:100
-        // flex:0.1,
-        // justifyContent:'center',
+    amount: {
+        backgroundColor: Colors.white,
+        borderRadius: 3,
+        width: 70,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 25
     },
-    description:{
-        backgroundColor:'green !important'
-        , flex:0.1,
+    listContainerFlex: {
+        flex: 1,
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
-    amount:{
-        backgroundColor:'red',
-        fontSize:100,
-        // width:100,
-        // height:30,
-        // margin:50,
-        //  flex:0.5,
-    },
-    pressedItem:{
-      backgroundColor:"blue"
-    },
-    button:{
-      // backgroundColor:"black"
-    },
-    goalTextContainerTrue: {
-        flex:1,
-        // marginTop:10,
-         width:'100%',
-        //  height:40,
-        // margin:8,
-        // borderRadius: 5,
-        // // padding:5,
-        // backgroundColor: Colors.blue,
-        flexDirection:'row',
-        justifyContent:'space-between',
-        //  alignItems:'center'
-        
-      },
-      goalTextContainer: {
-        // flex:1,
-        marginTop:10,
-         width:250,
-         height:40,
-        margin:8,
+    listContainer: {
+        marginTop: 10,
+        width: 250,
+        height: 40,
+        margin: 8,
         borderRadius: 5,
-        padding:5,
+        padding: 5,
         backgroundColor: Colors.pink,
-        flexDirection:'row',
-        justifyContent:'space-between',
-         alignItems:'center'
-        
-      },
-      goaltext:{
-        fontSize: 30,
-      color: Colors.black,
-      // backgroundColor:'#aaa',
-      padding: 8,
-      },
-      pressedItem:{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    pressedItem: {
         backgroundColor: Colors.yellow,
-      opacity: 0.5,
-      }
-    });
+        opacity: 0.5,
+    }
+});

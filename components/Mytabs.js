@@ -1,88 +1,87 @@
-import { View, Text, Button,Pressable } from 'react-native'
-import React, { useState } from 'react';
+import { View, Pressable, StyleSheet } from 'react-native';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AllExpenses from './AllExpenses.js';
 import ImportantExpenses from './ImportantExpenses.js';
-import { AntDesign,MaterialIcons } from '@expo/vector-icons'; 
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { Colors } from '../helpers/Colors.js';
 
-  
-export default function Mytabs({route,navigation,expenses,setExpenses,importantExpenses,setImportantExpenses}) {
 
-    const Tab = createBottomTabNavigator(); 
+export default function Mytabs({ route, navigation, expenses, importantExpenses }) {
 
+    const Tab = createBottomTabNavigator();
 
-    function goToAddExpense(){
-        console.log('@',navigation)
-        navigation.navigate("AddExpense")}
+    function goToAddExpense() {
+        navigation.navigate("AddExpense")
+    }
+
     function rightButton() {
-        return(
-            <View style={{flexDirection:'row',flex:1,justifyContent:'center',alignItems:'center'}}>
-                <View style={{flex:10,alignItems:'flex-end'}}>
-            <Pressable 
-            onPress={goToAddExpense
-            }
-            android_ripple={{color:Colors.yellow, foreground: true}}
-            style={({pressed})=>{
-                if(pressed){return {backgroundColor:Colors.yellow};}
-                
-                }
-            }
-
-            >
-
-              <View >
-              <AntDesign name="plus" size={24} color="black" />
-                {/* <Text style={styles.button}>x</Text> */}
-              </View>
-            </Pressable>
-            </View>
-            <View style={{flex:2}}></View>
-            {/* <View style={{flex:0.5,backgroundColor:Colors.green}}></View> */}
+        return (
+            <View style={styles.rightBottonContainer}>
+                <View style={styles.plusIconContainer}>
+                    <Pressable
+                        onPress={goToAddExpense
+                        }
+                        android_ripple={{ color: Colors.yellow, foreground: true }}
+                        style={({ pressed }) => {
+                            if (pressed) { return { backgroundColor: Colors.yellow }; }
+                        }
+                        }>
+                        <AntDesign name="plus" size={24} color="black" />
+                    </Pressable>
+                </View>
+                <View style={styles.rightContainer}></View>
             </View>
         )
-      }
-      console.log('@mytabs',route.params)
-  return (
-    
-    <Tab.Navigator 
-    screenOptions={{ 
-        headerStyle:{backgroundColor:Colors.purple},
-        headerTintColor:Colors.white,
-        headerTitleAlign:"center"
-        }}
-        >
-        
-      <Tab.Screen 
-      name="AllExpenses" 
-    //   component={AllExpenses} 
-      options={
-        ({route,navigation})=>{
-          return {
-            
-      tabBarIcon: ({ color, size }) => (
-        <MaterialIcons name="attach-money" size={24} color="black" />
-      ),
-            // title:route.params.text, 
-            headerRight:rightButton}}
-    }>
-        {(props) => <AllExpenses  {...props} expenses={expenses} setExpenses={setExpenses} setImportantExpenses={setImportantExpenses}/>}
-    </Tab.Screen >
-      <Tab.Screen 
-      name="ImportantExpenses"  
-      options={
-        
-        ({route,navigation})=>{
-          return {
-            
-      tabBarIcon: ({ color, size }) => (
-        <AntDesign name="exclamation" size={24} color="black" />
-      ),
-            // title:route.params.text, 
-            headerRight:rightButton}}
-    }>
-                {(props) => <ImportantExpenses  {...props} importantExpenses={importantExpenses}/>}
-                </Tab.Screen>
-    </Tab.Navigator>
-  )
+    }
+
+    return (
+        <Tab.Navigator
+            screenOptions={{
+                headerStyle: { backgroundColor: Colors.purple },
+                headerTintColor: Colors.white,
+                headerTitleAlign: "center"
+            }}>
+
+            <Tab.Screen
+                name="AllExpenses"
+                options={{
+                    tabBarIcon: () => (
+                        <MaterialIcons name="attach-money" size={24} color="black" />
+                    ),
+                    headerRight: rightButton
+                }
+                }>
+                {(props) => <AllExpenses  {...props} expenses={expenses} />}
+            </Tab.Screen >
+            <Tab.Screen
+                name="ImportantExpenses"
+                options={{
+                    tabBarIcon: () => (
+                        <AntDesign name="exclamation" size={24} color="black" />
+                    ),
+                    headerRight: rightButton
+                }
+                }>
+                {(props) => <ImportantExpenses  {...props} importantExpenses={importantExpenses} />}
+            </Tab.Screen>
+        </Tab.Navigator>
+    )
 }
+
+const styles = StyleSheet.create({
+    rightBottonContainer: {
+        flexDirection: 'row',
+        width: 80,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    plusIconContainer: {
+        flex: 5,
+        alignItems: 'flex-end'
+    },
+    rightContainer: {
+        flex: 2
+    }
+});
